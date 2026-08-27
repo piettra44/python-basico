@@ -101,12 +101,29 @@ def marcar_como_zerado(titulo):
     conn.close()
     return encontrou
 
+def deletar_jogo(titulo):
+    conn = sqlite3.connect(CAMINHO_BANCO)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "DELETE FROM jogos WHERE titulo = ?",
+        (titulo,)
+    )
+
+    encontrou = cursor.rowcount > 0
+
+    conn.commit()
+    conn.close()
+
+    return encontrou
+        
 def exibir_menu():
     exibir_cabecalho("🎮 GameVault")
     print("1. Adicionar jogo")
     print("2. Listar jogo")
     print("3. Marcar jogo como zerado")
-    print("4. Sair\n")
+    print("4. Deletar jogo")
+    print("5. Sair\n")
 
 def pausar():
     input("Pressione Enter para voltar ao menu...")
@@ -143,12 +160,22 @@ def main():
                 print()
 
         elif opcao == "4":
+            exibir_cabecalho("Deletar jogo")
+            titulo = input("Título do jogo à ser deletado: ")
+
+            if deletar_jogo(titulo):
+                print(f"\n'{titulo}' deletado com sucesso!")
+
+            else:
+                print(f"\n'{titulo}' não encontrado.")
+
+        elif opcao == "5":
             print("Até a próxima! 💕")
             break 
 
         # Caso o usuário digite ua opção inválida. exemplo: 9 (não existe)
         else:
-            print("Opção inválida! Escolha um número de 1 a 4.")
+            print("Opção inválida! Escolha um número de 1 a 5.")
             pausar()
 
 if __name__ == "__main__":
